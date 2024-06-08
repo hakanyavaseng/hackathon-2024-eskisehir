@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HackathonAPI.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+534c3ee1d25b90d16601e39c5a06e538e813fcca")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4876c99c5c3e5de574b833bc87c45eff95240234")]
 [assembly: System.Reflection.AssemblyProductAttribute("HackathonAPI.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HackathonAPI.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

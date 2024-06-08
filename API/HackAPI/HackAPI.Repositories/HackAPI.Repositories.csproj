@@ -6,4 +6,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HackAPI.Data\HackAPI.Data.csproj" />
+    <ProjectReference Include="..\HackAPI.Entities\HackAPI.Entities.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,4 +1,5 @@
-﻿using HackAPI.Entities.Entities.Common;
+﻿using HackAPI.Entities.Entities;
+using HackAPI.Entities.Entities.Common;
 using System.Linq.Expressions;
 
 namespace HackAPI.Repositories.Abstracts

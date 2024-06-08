@@ -45,6 +45,18 @@ namespace HackAPI.WebAPI.Controllers
             await _repositoryManager.SaveAsync();
             return Ok(productDto);
         }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(string id)
+        {
+            var product = await _repositoryManager.GetReadRepository<Product>().GetAsync(x => x.Id == Guid.Parse(id));
+            if (product == null)
+            {
+                return NotFound();
+            }
+            await _repositoryManager.GetWriteRepository<Product>().DeleteAsync(product);
+            await _repositoryManager.SaveAsync();
+            return Ok();
+        }
 
         //[HttpPut("{id}")]
         //public IActionResult UpdateProduct(int id, [FromBody] Product product)

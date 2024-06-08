@@ -58,6 +58,9 @@ namespace HackAPI.Data.Contexts
             var entries = ChangeTracker.Entries<BaseEntity>();
             foreach (var entry in entries)
             {
+                if(entry.Entity is ProductProductions || entry.Entity is Production)
+                    continue;
+
                 switch (entry.State)
                 {
                     case EntityState.Added:

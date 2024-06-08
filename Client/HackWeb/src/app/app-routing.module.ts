@@ -6,6 +6,8 @@ import { VehicleComponent } from './admin/vehicle/vehicle.component';
 import { ProductionComponent } from './admin/production/production.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { TransportationComponent } from './admin/transportation/transportation.component';
+import { ReportComponent } from './admin/report/report.component';
+
 
 const routes: Routes = [
   {path: "", redirectTo: "admin", pathMatch: "full"},
@@ -14,6 +16,7 @@ const routes: Routes = [
     {path: "vehicle", component: VehicleComponent},
     {path: "production", component: ProductionComponent},
     {path: "transportation", component: TransportationComponent},
+    {path: "report", component: ReportComponent},
     {path: "", component: DashboardComponent, pathMatch: "full"}
   ]}
 

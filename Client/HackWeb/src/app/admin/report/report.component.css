@@ -1,0 +1,7 @@
+#yearly {
+    display: none; /* Initially hide the yearly tab content */
+  }
+  
+  #myTabContent .tab-pane.active {
+    display: block; /* Show the active tab content */
+  }

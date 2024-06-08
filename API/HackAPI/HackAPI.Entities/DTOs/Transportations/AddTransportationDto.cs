@@ -1,11 +1,4 @@
-﻿using HackAPI.Entities.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HackAPI.Entities.DTOs.Transportations
+﻿namespace HackAPI.Entities.DTOs.Transportations
 {
     public class AddTransportationDto
     {

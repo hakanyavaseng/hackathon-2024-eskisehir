@@ -1,32 +1,79 @@
-<div class="card my-2 mx-5">
+<div class="container mt-5">
+  <!-- Button to open the modal -->
+  <button class="btn btn-primary" (click)="openModal(modalAdd)">
+    Add Transportation
+  </button>
+
+  <!-- Card displaying productions -->
+  <div class="card my-2">
     <h5 class="card-header">Productions</h5>
-    <div class="table-responsive text-nowrap">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Production Date Time</th>
-            <th>Total Carbon Footprint</th>
-            <th>Products</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody class="table-border-bottom-0">
-          <tr *ngFor="let production of productions">
-            <td>{{ production.productionDateTime | date: 'medium' }}</td>
-            <td>{{ production.totalCarbonFootprint }}</td>
-            <td>
-              <ul>
-                <li *ngFor="let product of production.products">
-                  {{ product.name }} <!-- Adjust this according to your Product model's structure -->
-                </li>
-              </ul>
-            </td>
-            <td>
-              <button class="btn btn-primary mx-2">Edit</button>
-              <button class="btn btn-danger">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Production Date Time</th>
+              <th>Total Carbon Footprint</th>
+              <th>Products</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let production of productions">
+              <td>{{ production.productionDateTime | date : "medium" }}</td>
+              <td>{{ production.totalCarbonFootprint }}</td>
+              <td>
+                <ul>
+                  <li *ngFor="let product of production.products">
+                    {{ product.name }}
+                  </li>
+                </ul>
+              </td>
+              <td>
+                <button class="btn btn-primary mx-2">Edit</button>
+                <button class="btn btn-danger">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
+
+  <ng-template #modalAdd let-modal>
+    <div class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add Production</h5>
+            <button
+              type="button"
+              class="btn-close"
+              (click)="modal.dismiss('Cross click')"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form [formGroup]="productionAddForm"></form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="modal.dismiss('Cross click')"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="onSubmit(productionAddForm)"
+            >
+              Add Production
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

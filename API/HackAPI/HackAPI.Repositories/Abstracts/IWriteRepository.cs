@@ -6,6 +6,7 @@ namespace HackAPI.Repositories.Abstracts
 {
     public interface IWriteRepository<T> where T : BaseEntity
     {
+        IQueryable<T> AsQueryable();
         //Create
         Task<int> AddAsync(T entity);
         Task<int> AddAsync(IEnumerable<T> entities);

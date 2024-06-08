@@ -8,6 +8,10 @@ import { AppRoutingModule } from '../app-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TransportationComponent } from './transportation/transportation.component';
+import { ReportComponent } from './report/report.component';
+import { ChartModule } from 'primeng/chart';
+
+
 
 
 
@@ -18,10 +22,11 @@ import { TransportationComponent } from './transportation/transportation.compone
     ProductionComponent,
     VehicleComponent,
     DashboardComponent,
-    TransportationComponent
+    TransportationComponent,
+    ReportComponent
   ],
   imports: [
-    AppRoutingModule, ReactiveFormsModule, FormsModule,
+    AppRoutingModule, ReactiveFormsModule, FormsModule, ChartModule,
     CommonModule
   ]
 })

@@ -17,13 +17,31 @@ namespace HackAPI.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduction([FromBody] AddProductionDto productionDto)
+        public async Task<IActionResult> CreateProduction([FromBody] List<AddProductionDto> productionDto)
         {
-            await _repositoryManager.GetWriteRepository<ProductProductions>().AddAsync(new ProductProductions()
+            var production = new Production
             {
-                
-            });
-         
+                Id = Guid.NewGuid(),
+                CreatedAt = DateTime.UtcNow,
+            };
+
+            await _repositoryManager.GetWriteRepository<Production>().AddAsync(production);
+            foreach (var product in productionDto)
+            {
+                var productToGetUnit = await _repositoryManager.GetReadRepository<Product>().GetAsync(x => x.Id ==  product.ProductId);
+
+                await _repositoryManager.GetWriteRepository<ProductProductions>()
+                    .AddAsync(new ProductProductions
+                    {
+                        Id = Guid.NewGuid(),
+                        CreatedAt = DateTime.UtcNow,
+                        ProductId = product.ProductId,
+                        Quantity = product.Quantity,
+                        ProductionsId = production.Id,
+                        TotalCarbonFootprint = product.Quantity * productToGetUnit.UnitCarbonFootprint
+                    });
+            }
+
             await _repositoryManager.SaveAsync();
             return Ok(productionDto);
         }
@@ -38,15 +56,15 @@ namespace HackAPI.WebAPI.Controllers
                .ThenInclude(x => x.Product)
                .Select(x => new ProductionDto
                {
-                   
+
                    Products = x.ProductProductions.Select(x => x.Product).ToList(),
                    ProductionDateTime = x.CreatedAt,
                    TotalCarbonFootprint = x.ProductProductions.Sum(x => x.Product.UnitCarbonFootprint * x.Quantity)
                })
                .ToListAsync();
 
-               
-               
+
+
             return Ok(productions);
         }
 

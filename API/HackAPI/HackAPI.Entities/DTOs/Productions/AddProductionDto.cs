@@ -4,8 +4,9 @@ namespace HackAPI.Entities.DTOs.Productions
 {
     public record AddProductionDto
     {
-        public ICollection<ProductProductions> ProductProductions { get; init; }
-        public ICollection<ProductionTransportation> ProductionTransportations { get; init; }
-       
+        public Guid ProductId { get; init; }
+        public int Quantity { get; init; }
+        public DateTime ProductionDateTime { get; init; }
+      
     }
 }

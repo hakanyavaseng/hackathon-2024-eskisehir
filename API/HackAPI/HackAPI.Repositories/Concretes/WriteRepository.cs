@@ -63,6 +63,11 @@ namespace HackAPI.Repositories.Concretes
             context.RemoveRange(Table.Where(predicate));
             return await context.SaveChangesAsync() > 0;
         }
+
+        public IQueryable<T> AsQueryable()
+        {
+            return Table.AsQueryable();
+        }
     }
 
 }

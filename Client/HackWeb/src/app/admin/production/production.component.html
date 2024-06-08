@@ -1,0 +1,32 @@
+<div class="card my-2 mx-5">
+    <h5 class="card-header">Productions</h5>
+    <div class="table-responsive text-nowrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Production Date Time</th>
+            <th>Total Carbon Footprint</th>
+            <th>Products</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody class="table-border-bottom-0">
+          <tr *ngFor="let production of productions">
+            <td>{{ production.productionDateTime | date: 'medium' }}</td>
+            <td>{{ production.totalCarbonFootprint }}</td>
+            <td>
+              <ul>
+                <li *ngFor="let product of production.products">
+                  {{ product.name }} <!-- Adjust this according to your Product model's structure -->
+                </li>
+              </ul>
+            </td>
+            <td>
+              <button class="btn btn-primary mx-2">Edit</button>
+              <button class="btn btn-danger">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>

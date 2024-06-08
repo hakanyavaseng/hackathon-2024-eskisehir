@@ -1,0 +1,70 @@
+
+
+<div class="mt-5 mx-5">
+  <button class="btn btn-primary" (click)="openModal(modalAdd)">Add Product</button>
+</div>
+<div class="card my-2 mx-5">
+  <h5 class="card-header">Products</h5>
+  <div class="table-responsive text-nowrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Price</th>
+          <th>Unit Carbon Footprint</th>
+          <th>Creation Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        <tr *ngFor="let product of products"></tr>
+        <tr *ngFor="let product of products">
+          <td>{{ product.name }}</td>
+          <td>{{ product.description }}</td>
+          <td>{{ product.price }}</td>
+          <td>{{ product.unitCarbonFootprint }}</td>
+          <td>{{ product.createdAt | date : "medium" }}</td>
+          <td>
+            <button class="btn btn-primary mx-2">Edit</button>
+            <button class="btn btn-danger">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-template #modalAdd let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="modalCenterTitle">Add Product</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+      <form [formGroup]="productAddForm" (ngSubmit)="onSubmit(productAddForm.value)">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" class="form-control" id="name" formControlName="name">
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <input type="text" class="form-control" id="description" formControlName="description">
+        </div>
+        <div class="mb-3">
+          <label for="price" class="form-label">Price</label>
+          <input type="number" class="form-control" id="price" formControlName="price">
+        </div>
+        <div class="mb-3">
+          <label for="unitCarbonFootprint" class="form-label">Unit Carbon Footprint</label>
+          <input type="number" class="form-control" id="unitCarbonFootprint" formControlName="unitCarbonFootprint">
+        </div>
+               
+      </form>
+    
+      
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+    <button type="button" class="btn btn-primary" (click)="onSubmit(productAddForm.value)">Add Product</button>
+  </div>
+</ng-template>

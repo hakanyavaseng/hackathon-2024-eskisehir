@@ -1,0 +1,72 @@
+
+
+<div class="mt-5 mx-5">
+    <button class="btn btn-primary" (click)="openModal(modalAdd)">Add Vehicle</button>
+  </div>
+  <div class="card my-2 mx-5">
+    <h5 class="card-header">Vehicles</h5>
+    <div class="table-responsive text-nowrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Model</th>
+            <th>Type</th>
+            <th>Unit Carbon Footprint</th>
+            <th>Creation Time</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody class="table-border-bottom-0">
+          <tr *ngFor="let vehicle of vehicles"></tr>
+          <tr *ngFor="let vehicle of vehicles">
+            <td>{{ vehicle.vehicleName }}</td>
+            <td>{{ vehicle.vehicleModel }}</td>
+            <td>{{ vehicle.vehicleType }}</td>
+            <td>{{ vehicle.unitCarbonFootprint }}</td>
+            <td>{{ vehicle.createdAt | date : "medium" }}</td>
+            <td>
+              <button class="btn btn-primary mx-2">Edit</button>
+              <button class="btn btn-danger">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+  <ng-template #modalAdd let-modal>
+    <div class="modal-header">
+      <h5 class="modal-title" id="modalCenterTitle">Add Vehicle</h5>
+      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="vehicleAddForm" (ngSubmit)="onSubmit(vehicleAddForm.value)">
+
+            <div class="mb-3">
+              <label for="vehicleName" class="form-label">Vehicle Name</label>
+                <input type="text" class="form-control" id="vehicleName" formControlName="vehicleName">
+            </div>
+            <div class="mb-3">
+              <label for="vehicleModel" class="form-label">Vehicle Model</label>
+                <input type="text" class="form-control" id="vehicleModel" formControlName="vehicleModel">
+            </div>
+            <div class="mb-3">
+              <label for="vehicleType" class="form-label">Vehicle Type</label>
+                <input type="text" class="form-control" id="vehicleType" formControlName="vehicleType">
+            </div>
+            <div class="mb-3">
+              <label for="unitCarbonFootprint" class="form-label">Unit Carbon Footprint</label>
+                <input type="number" class="form-control" id="unitCarbonFootprint" formControlName="unitCarbonFootprint">
+            </div>
+               
+        </form>
+      
+        
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+      <button type="button" class="btn btn-primary" (click)="onSubmit(vehicleAddForm.value)">Add Vehicle</button>
+    </div>
+  </ng-template>
+  

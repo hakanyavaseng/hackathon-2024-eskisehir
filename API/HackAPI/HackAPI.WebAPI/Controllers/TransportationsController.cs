@@ -4,6 +4,7 @@ using HackAPI.Entities.Entities;
 using HackAPI.Repositories.Abstracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HackAPI.WebAPI.Controllers
 {
@@ -20,21 +21,20 @@ namespace HackAPI.WebAPI.Controllers
         public async Task<IActionResult> GetTransportations()
         {
             var transportations = await _repositoryManager.GetReadRepository<Transportation>()
-                .GetAllAsync();
+               .AsQueryable()
+               .Include(x => x.Vehicle)
+               .ToListAsync();
             return Ok(transportations);
         }
         [HttpPost]
-        public async Task<IActionResult> CreateVehicle([FromBody] AddTransportationDto transportationDto)
+        public async Task<IActionResult> CreateTransportations([FromBody] AddTransportationDto transportationDto)
         {
             await _repositoryManager.GetWriteRepository<Transportation>().AddAsync(new Transportation()
             {
-                CreatedAt = DateTime.Now,
-                TransportationDateTime = transportationDto.TransportationDateTime,
+                TransportationDateTime = transportationDto.TransportationDateTime.ToUniversalTime(),
                 Distance = transportationDto.Distance,
                 VehicleId = transportationDto.VehicleId,
                 TotalCarbonFootprint = transportationDto.TotalCarbonFootprint
-
-
 
             });
             await _repositoryManager.SaveAsync();

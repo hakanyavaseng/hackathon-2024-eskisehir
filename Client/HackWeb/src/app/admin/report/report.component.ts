@@ -4,6 +4,7 @@ import { ProductionMonthly } from '../../contracts/reports/productionsMonthly';
 import { ProductionYearly } from '../../contracts/reports/productionsYearly';
 import { TransportationMonthly } from '../../contracts/reports/transportationMonthly';
 import { TransportationYearly } from '../../contracts/reports/transportationYearly';
+import { CouldBeSavedCarbonFootprint } from '../../contracts/reports/couldBeSavedCarbonFootprint';
 
 @Component({
   selector: 'app-report',
@@ -13,6 +14,8 @@ import { TransportationYearly } from '../../contracts/reports/transportationYear
 export class ReportComponent {
 
   constructor(private httpClientService: HttpClientService) { }
+
+  couldBeSavedCarbonFootprint: CouldBeSavedCarbonFootprint;
 
   monthlyProductionReport: ProductionMonthly[];
   yearlyProductionReport: ProductionYearly[];
@@ -33,11 +36,22 @@ export class ReportComponent {
     
   };
 
+  getCouldBeSavedCarbonFootprint() {
+    this.httpClientService.get<CouldBeSavedCarbonFootprint>({
+      controller: "Reports",
+      action: "GetSavedCarbonEmission"
+    }).subscribe(data => {
+      this.couldBeSavedCarbonFootprint = data;
+      console.log(this.couldBeSavedCarbonFootprint);
+    });
+  }
+
   ngOnInit() {
     this.getMonthlyProductionReport();
     this.getYearlyProductionReport();
     this.getMonthlyTransportationReport();
     this.getYearlyTransportationReport();
+    this.getCouldBeSavedCarbonFootprint();
   }
 
   ngOnViewInit() {

@@ -17,10 +17,20 @@ export class ProductComponent implements OnInit {
       price: '',
       unitCarbonFootprint: '',
     });
+
+    this.productEditForm = this.formBuilder.group({
+      id: '',
+      name: '',
+      description: '',
+      price: '',
+      unitCarbonFootprint: '',
+    });
   }
 
   productAddForm : FormGroup;
+  productEditForm: FormGroup;
   products : Product[];
+  selectedProduct : Product;
 
   ngOnInit(): void {
     this.getProducts();
@@ -31,8 +41,33 @@ export class ProductComponent implements OnInit {
     this.modalService.dismissAll();
   }
 
-  openModal(modal: any) {
+  onSubmitEdit(productEditForm : any) {
+    this.editProduct(this.productEditForm.value);
+    this.modalService.dismissAll();
+  }
+
+  openModal(modal: any, product?: Product) {
+    if(product) {
+      this.selectedProduct =  product;
+      this.productEditForm.patchValue(product);
+    }
     this.modalService.open(modal);
+  }
+
+  deleteProduct(id: string) {
+    this.httpClientService.delete({
+      controller: "Products"
+    }, id).subscribe(data => {
+      this.getProducts();
+    });
+  }
+
+  editProduct(product: Product) {
+    this.httpClientService.put<Product>({
+      controller: "Products",
+    }, product).subscribe(data => {
+      this.getProducts();
+    });
   }
 
 

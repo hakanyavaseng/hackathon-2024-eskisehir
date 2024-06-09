@@ -1,5 +1,6 @@
+import { ByMonthModel } from "./byMonthModel";
+
 export class TransportationMonthly {
-    monthNumber: number;
-    monthName: string;
-    totalCarbonFootprintCount: number;
+    transportations : ByMonthModel[];
+    totalCarbonFootprintIfElectric : ByMonthModel[];
 }

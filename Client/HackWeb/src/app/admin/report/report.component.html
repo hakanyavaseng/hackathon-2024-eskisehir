@@ -49,6 +49,7 @@
         </div>
         <div class="tab-pane fade" id="navs-top-profile" role="tabpanel">
           <div class="card">
+            <p> You transported total of {{this.couldBeSavedCarbonFootprint.fossilFuelVehicleCount}} fossil fueled vehicle(s). This could be reduced <b>{{this.couldBeSavedCarbonFootprint.savedCarbonEmmision}}</b> by using Electrical vehicles.</p>
             <p-chart
               type="line"
               [data]="monthlyTransportationChartData"

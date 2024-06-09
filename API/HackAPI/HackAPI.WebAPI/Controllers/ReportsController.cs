@@ -1,5 +1,7 @@
-﻿using HackAPI.Entities.DTOs.Productions;
+﻿using HackAPI.Entities.DTOs.Analysis;
+using HackAPI.Entities.DTOs.Productions;
 using HackAPI.Entities.Entities;
+using HackAPI.Entities.Enums;
 using HackAPI.Repositories.Abstracts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +37,10 @@ namespace HackAPI.WebAPI.Controllers
                 .ToListAsync();
 
 
+
+
+
+
             return Ok(productions);
         }
 
@@ -62,16 +68,37 @@ namespace HackAPI.WebAPI.Controllers
             var transportations = await _repositoryManager.GetReadRepository<Transportation>()
                 .AsQueryable()
                 .GroupBy(x => x.CreatedAt.Month) // Group by month number
-                .Select(x => new
+                .Select(x => new ByMonthModel()
                 {
                     MonthNumber = x.Key,
                     MonthName = CultureInfo.GetCultureInfo("EN-en").DateTimeFormat.GetMonthName(x.Key),
-                    TotalCarbonFootprintCount = x.Sum(p => p.TotalCarbonFootprint)
+                    TotalCarbonFootprintCount = (double)x.Sum(p => p.TotalCarbonFootprint)
                 })
                 .OrderBy(p => p.MonthNumber)
                 .ToListAsync();
 
-            return Ok(transportations);
+   
+
+            var totalCarbonFootprintIfElectrical = await _repositoryManager.GetReadRepository<Transportation>()
+                .AsQueryable()
+                .GroupBy(x => x.CreatedAt.Month) // Group by month number
+                .Where(p => p.Where(x => x.Vehicle.VehicleType == VehicleType.FossilFuel.ToString()).Count() > 0)
+                .Select(x => new ByMonthModel()
+                {
+                    MonthNumber = x.Key,
+                    MonthName = CultureInfo.GetCultureInfo("EN-en").DateTimeFormat.GetMonthName(x.Key),
+                    TotalCarbonFootprintCount = (double)x.Sum(p => p.TotalCarbonFootprint) * 0.4646
+                })
+                .OrderBy(p => p.MonthNumber)
+                .ToListAsync();
+
+            
+            return Ok(new TransportationsByMonth()
+            {
+                 Transportation = transportations,
+                 TotalCarbonFootprintIfElectrical = totalCarbonFootprintIfElectrical
+                
+            });
         }
 
         [HttpGet("GetTransportationsWithCarbonFootprintByYear")]
@@ -91,7 +118,31 @@ namespace HackAPI.WebAPI.Controllers
             return Ok(transportations);
         }
 
-       
+        [HttpGet("GetSavedCarbonEmission")]
+        public async Task<IActionResult> GetSavedCarbonEmission()
+        {
+            var transportations = await _repositoryManager.GetReadRepository<Transportation>()
+                .AsQueryable()
+                .Include(x => x.Vehicle)
+                .ToListAsync();
+            var savedCarbonEmission = 0.0;
+            var fossilFuelTransportations = transportations.Where(x => x.Vehicle.VehicleType == VehicleType.FossilFuel.ToString()).Count();
+            foreach (var transportation in transportations)
+            {
+                if (transportation.Vehicle.VehicleType == VehicleType.FossilFuel.ToString())
+                {
+                    savedCarbonEmission = savedCarbonEmission + ((double)transportation.Distance * 0.4646);
+                }
+            }
+            return Ok(new SavedCarbonEmmisionModel()
+            {
+                FossilFuelVehicleCount = fossilFuelTransportations,
+                SavedCarbonEmmision = savedCarbonEmission
+            });
+        }
+
+
+
 
     }
 }

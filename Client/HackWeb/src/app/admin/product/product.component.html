@@ -26,8 +26,8 @@
           <td>{{ product.unitCarbonFootprint }}</td>
           <td>{{ product.createdAt | date : "medium" }}</td>
           <td>
-            <button class="btn btn-primary mx-2">Edit</button>
-            <button class="btn btn-danger">Delete</button>
+            <button class="btn btn-primary mx-2" (click)="openModal(modalEdit, product)">Edit</button>
+            <button class="btn btn-danger" (click)="deleteProduct(product.id)">Delete</button>
           </td>
         </tr>
       </tbody>
@@ -66,5 +66,37 @@
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('Cross click')">Close</button>
     <button type="button" class="btn btn-primary" (click)="onSubmit(productAddForm.value)">Add Product</button>
+  </div>
+</ng-template>
+
+<ng-template #modalEdit let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="modalCenterTitle">Edit Product</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+      <form [formGroup]="productEditForm" (ngSubmit)="onSubmitEdit(productEditForm.value)">
+        <input type="hidden" [value]="selectedProduct.id" formControlName="id">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input type="text" [value]="selectedProduct.name" class="form-control" id="name" formControlName="name">
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <input type="text" [value]="selectedProduct.description" class="form-control" id="description" formControlName="description">
+        </div>
+        <div class="mb-3">
+          <label for="price" class="form-label">Price</label>
+          <input type="number" [value]="selectedProduct.price" class="form-control" id="price" formControlName="price">
+        </div>
+        <div class="mb-3">
+          <label for="unitCarbonFootprint" class="form-label">Unit Carbon Footprint</label>
+          <input type="number" [value]="selectedProduct.unitCarbonFootprint" class="form-control" id="unitCarbonFootprint" formControlName="unitCarbonFootprint">
+        </div>
+      </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+    <button type="button" class="btn btn-primary" (click)="onSubmitEdit(productEditForm.value)">Edit Product</button>
   </div>
 </ng-template>

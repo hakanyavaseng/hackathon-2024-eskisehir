@@ -1,8 +1,10 @@
+import { Vehicle } from "./vehicle";
+
 export class Transportation {
     id: string;
     transportationDateTime: Date;
     distance: number;
     totalCarbonFootprint: number;
-    vehicleId: string;
+    vehicle : Vehicle;
     createdAt: Date;
 }

@@ -25,6 +25,7 @@ namespace HackAPI.WebAPI.Controllers
                .Include(x => x.Vehicle)
                .ToListAsync();
             return Ok(transportations);
+
         }
         [HttpPost]
         public async Task<IActionResult> CreateTransportations([FromBody] AddTransportationDto transportationDto)
@@ -39,6 +40,31 @@ namespace HackAPI.WebAPI.Controllers
             });
             await _repositoryManager.SaveAsync();
             return Ok(transportationDto);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateTransportations([FromBody] UpdateTransportationDto transportationDto)
+        {
+            var transportation = await _repositoryManager.GetWriteRepository<Transportation>().UpdateAsync(new Transportation()
+            {
+                Id = transportationDto.Id,
+                TransportationDateTime = transportationDto.TransportationDateTime.ToUniversalTime(),
+                Distance = transportationDto.Distance,
+                VehicleId = transportationDto.VehicleId,
+                TotalCarbonFootprint = transportationDto.TotalCarbonFootprint
+            });
+
+            await _repositoryManager.SaveAsync();
+           
+            return Ok(transportationDto);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTransportations(Guid id)
+        {
+            var transportation = await _repositoryManager.GetWriteRepository<Transportation>().DeleteAsync(id);
+            await _repositoryManager.SaveAsync();
+            return Ok();
         }
       
 

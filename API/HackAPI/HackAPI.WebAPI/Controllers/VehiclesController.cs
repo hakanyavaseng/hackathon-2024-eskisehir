@@ -45,9 +45,25 @@ namespace HackAPI.WebAPI.Controllers
             {
                 return NotFound();
             }
-            await _repositoryManager.GetWriteRepository<Vehicle>().DeleteAsync(vehicle);
+                await _repositoryManager.GetWriteRepository<Vehicle>().DeleteAsync(vehicle);
             await _repositoryManager.SaveAsync();
             return Ok();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateVehicle([FromBody] UpdateVehicleDto vehicleDto)
+        {
+            var vehicle = await _repositoryManager.GetWriteRepository<Vehicle>().UpdateAsync(new Vehicle()
+            {
+                Id = vehicleDto.Id,
+                VehicleName = vehicleDto.VehicleName,
+                VehicleType = vehicleDto.VehicleType,
+                VehicleModel = vehicleDto.VehicleModel,
+                UnitCarbonFootprint = vehicleDto.UnitCarbonFootprint
+            });
+            await _repositoryManager.SaveAsync();
+
+            return Ok(vehicleDto);
         }
 
 

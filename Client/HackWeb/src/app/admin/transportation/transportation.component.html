@@ -1,64 +1,194 @@
 <div class="mt-5 mx-5">
-    <button class="btn btn-primary" (click)="openModal(modalAdd)">Add Transportation</button>
+  <button class="btn btn-primary" (click)="openModal(modalAdd)">
+    Add Transportation
+  </button>
+</div>
+<div class="card my-2 mx-5">
+  <h5 class="card-header">Transportations</h5>
+  <div class="table-responsive text-nowrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Transportation Date Time</th>
+          <th>Distance</th>
+          <th>Total Carbon Footprint</th>
+          <th>Vehicle Id</th>
+          <th>Vehicle Name</th>
+          <th>Vehicle Type</th>
+          <th>Creation Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody class="table-border-bottom-0">
+        <tr *ngFor="let transportation of transportations">
+          <td>{{ transportation.transportationDateTime | date : "medium" }}</td>
+          <td>{{ transportation.distance }}</td>
+          <td>{{ transportation.totalCarbonFootprint }}</td>
+          <td>{{ transportation.vehicle.id }}</td>
+          <td>{{ transportation.vehicle.vehicleName }}</td>
+          <td>{{ transportation.vehicle.vehicleType }}</td>
+          <td>{{ transportation.createdAt | date : "medium" }}</td>
+          <td>
+            <button
+              class="btn btn-primary mx-2"
+              (click)="openEditModal(modalEdit, transportation)"
+            >
+              Edit
+            </button>
+            <button class="btn btn-danger" (click)="deleteTransportation(transportation)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  <div class="card my-2 mx-5">
-    <h5 class="card-header">Transportations</h5>
-    <div class="table-responsive text-nowrap">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Transportation Date Time</th>
-            <th>Distance</th>
-            <th>Total Carbon Footprint</th>
-            <th>Creation Time</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody class="table-border-bottom-0">
-          <tr *ngFor="let transportation of transportations">
-            <td>{{ transportation.transportationDateTime | date: 'medium' }}</td>
-            <td>{{ transportation.distance }}</td>
-            <td>{{ transportation.totalCarbonFootprint }}</td>
-            <td>{{ transportation.createdAt | date: 'medium' }}</td>
-            <td>
-              <button class="btn btn-primary mx-2">Edit</button>
-              <button class="btn btn-danger">Delete</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+</div>
+
+<ng-template #modalAdd let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="modalCenterTitle">Add Transportation</h5>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="modal.dismiss('Cross click')"
+      aria-label="Close"
+    ></button>
   </div>
-  
-  <ng-template #modalAdd let-modal>
-    <div class="modal-header">
-      <h5 class="modal-title" id="modalCenterTitle">Add Transportation</h5>
-      <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-label="Close"></button>
-    </div>
-    <div class="modal-body">
-      <form [formGroup]="transportationAddForm">
-        <div class="mb-3">
-          <label for="transportationDateTime" class="form-label">Transportation Date Time</label>
-          <input type="datetime-local" class="form-control" id="transportationDateTime" formControlName="transportationDateTime">
-        </div>
-        <div class="mb-3">
-          <label for="distance" class="form-label">Distance</label>
-          <input type="number" class="form-control" id="distance" formControlName="distance" (input)="calculateTotalCarbonFootprint()">
-        </div>
-        <div class="mb-3">
-          <label for="vehicleId" class="form-label">Vehicle</label>
-          <select class="form-select" id="vehicleId" formControlName="vehicleId" (change)="calculateTotalCarbonFootprint()">
-            <option *ngFor="let vehicle of vehicles" [value]="vehicle.id">{{ vehicle.vehicleName }}</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="totalCarbonFootprint" class="form-label">Total Carbon Footprint</label>
-          <input type="number" class="form-control" id="totalCarbonFootprint" formControlName="totalCarbonFootprint" readonly>
-        </div>
-      </form>
-    </div>
+  <div class="modal-body">
+    <form [formGroup]="transportationAddForm">
+      <div class="mb-3">
+        <label for="transportationDateTime" class="form-label"
+          >Transportation Date Time</label
+        >
+        <input
+          type="datetime-local"
+          class="form-control"
+          id="transportationDateTime"
+          formControlName="transportationDateTime"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="distance" class="form-label">Distance</label>
+        <input
+          type="number"
+          class="form-control"
+          id="distance"
+          formControlName="distance"
+          (input)="calculateTotalCarbonFootprintAddition()"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="vehicleId" class="form-label">Vehicle</label>
+        <select
+          class="form-select"
+          id="vehicleId"
+          formControlName="vehicleId"
+          (change)="calculateTotalCarbonFootprintAddition()"
+        >
+          <option *ngFor="let vehicle of vehicles" [value]="vehicle.id">
+            {{ vehicle.vehicleName }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="totalCarbonFootprint" class="form-label"
+          >Total Carbon Footprint</label
+        >
+        <input
+          type="number"
+          class="form-control"
+          id="totalCarbonFootprint"
+          formControlName="totalCarbonFootprint"
+          readonly
+        />
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="modal.dismiss('Cross click')"
+    >
+      Close
+    </button>
+    <button type="button" class="btn btn-primary" (click)="onSubmit()">
+      Add Transportation
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #modalEdit let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title" id="modalCenterTitle">Edit Transportation</h5>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="modal.dismiss('Cross click')"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="transportationEditForm">
+      <input type="hidden" formControlName="id" />
+      <div class="mb-3">
+        <label for="transportationDateTime" class="form-label"
+          >Transportation Date Time</label
+        >
+        <input
+          type="datetime-local"
+          class="form-control"
+          id="transportationDateTime"
+          formControlName="transportationDateTime"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="distance" class="form-label">Distance</label>
+        <input
+          type="number"
+          class="form-control"
+          id="distance"
+          formControlName="distance"
+          (input)="calculateTotalCarbonFootprintEdit()"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="vehicleId" class="form-label">Vehicle</label>
+        <select
+          class="form-select"
+          id="vehicleId"
+          formControlName="vehicleId"
+          (change)="calculateTotalCarbonFootprintEdit()"
+        >
+          <option *ngFor="let vehicle of vehicles" [value]="vehicle.id">
+            {{ vehicle.vehicleName }}
+          </option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="totalCarbonFootprint" class="form-label"
+          >Total Carbon Footprint</label
+        >
+        <input
+          type="number"
+          class="form-control"
+          id="totalCarbonFootprint"
+          formControlName="totalCarbonFootprint"
+          readonly
+        />
+      </div>
+    </form>
+
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('Cross click')">Close</button>
-      <button type="button" class="btn btn-primary" (click)="onSubmit()">Add Transportation</button>
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="modal.dismiss('Cross click')"
+      >
+        Close
+      </button>
+      <button type="button" class="btn btn-primary" (click)="onEditSubmit()">
+        Edit Transportation
+      </button>
     </div>
-  </ng-template>
+  </div>
+</ng-template>

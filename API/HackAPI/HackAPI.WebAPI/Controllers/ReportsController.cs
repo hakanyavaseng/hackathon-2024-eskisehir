@@ -26,7 +26,7 @@ namespace HackAPI.WebAPI.Controllers
             var productions = await _repositoryManager.GetReadRepository<ProductProductions>()
                 .AsQueryable()
                 .Include(x => x.Product)
-                .GroupBy(x => x.Product.CreatedAt.Month) // Group by month number
+                .GroupBy(x => x.Productions.CreatedAt.Month) // Group by month number
                 .Select(x => new
                 {
                     MonthNumber = x.Key,
@@ -35,11 +35,6 @@ namespace HackAPI.WebAPI.Controllers
                 })
                 .OrderBy(p => p.MonthNumber)
                 .ToListAsync();
-
-
-
-
-
 
             return Ok(productions);
         }
@@ -50,7 +45,7 @@ namespace HackAPI.WebAPI.Controllers
             var productions = await _repositoryManager.GetReadRepository<ProductProductions>()
                 .AsQueryable()
                 .Include(x => x.Product)
-                .GroupBy(x => x.Product.CreatedAt.Year) // Group by year
+                .GroupBy(x => x.Productions.CreatedAt.Year) // Group by year
                 .Select(x => new
                 {
                     Year = x.Key,
@@ -67,7 +62,7 @@ namespace HackAPI.WebAPI.Controllers
         {
             var transportations = await _repositoryManager.GetReadRepository<Transportation>()
                 .AsQueryable()
-                .GroupBy(x => x.CreatedAt.Month) // Group by month number
+                .GroupBy(x => x.TransportationDateTime.Month) // Group by month number
                 .Select(x => new ByMonthModel()
                 {
                     MonthNumber = x.Key,
@@ -81,7 +76,7 @@ namespace HackAPI.WebAPI.Controllers
 
             var totalCarbonFootprintIfElectrical = await _repositoryManager.GetReadRepository<Transportation>()
                 .AsQueryable()
-                .GroupBy(x => x.CreatedAt.Month) // Group by month number
+                .GroupBy(x => x.TransportationDateTime.Month) // Group by month number
                 .Where(p => p.Where(x => x.Vehicle.VehicleType == VehicleType.FossilFuel.ToString()).Count() > 0)
                 .Select(x => new ByMonthModel()
                 {
@@ -106,16 +101,32 @@ namespace HackAPI.WebAPI.Controllers
         {
             var transportations = await _repositoryManager.GetReadRepository<Transportation>()
                 .AsQueryable()
-                .GroupBy(x => x.CreatedAt.Year) // Group by year
-                .Select(x => new
+                .GroupBy(x => x.TransportationDateTime.Year) // Group by year
+                .Select(x => new ByYearModel()
                 {
                     Year = x.Key,
-                    TotalCarbonFootprintCount = x.Sum(p => p.TotalCarbonFootprint)
+                    TotalCarbonFootprintCount = (double)x.Sum(p => p.TotalCarbonFootprint)
                 })
                 .OrderBy(p => p.Year)
                 .ToListAsync();
 
-            return Ok(transportations);
+            var totalCarbonFootprintIfElectrical = await _repositoryManager.GetReadRepository<Transportation>()
+                .AsQueryable()
+                .GroupBy(x => x.TransportationDateTime.Year) // Group by year
+                .Where(p => p.Where(x => x.Vehicle.VehicleType == VehicleType.FossilFuel.ToString()).Count() > 0)
+                .Select(x => new ByYearModel()
+                { 
+                    Year = x.Key,
+                    TotalCarbonFootprintCount = (double)x.Sum(p => p.TotalCarbonFootprint) * 0.4646
+                })
+                .OrderBy(p => p.Year)
+                .ToListAsync();
+
+            return Ok(new TransportationByYear()
+            {
+                Transportation = transportations,
+                TotalCarbonFootprintIfElectrical = totalCarbonFootprintIfElectrical
+            });
         }
 
         [HttpGet("GetSavedCarbonEmission")]

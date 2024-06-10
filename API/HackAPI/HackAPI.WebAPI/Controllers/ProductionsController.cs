@@ -61,6 +61,7 @@ namespace HackAPI.WebAPI.Controllers
                    ProductionDateTime = x.CreatedAt,
                    TotalCarbonFootprint = x.ProductProductions.Sum(x => x.Product.UnitCarbonFootprint * x.Quantity)
                })
+               .OrderByDescending(x => x.ProductionDateTime)
                .ToListAsync();
 
 

@@ -18,9 +18,18 @@ export class VehicleComponent {
       vehicleModel: '',
       unitCarbonFootprint: ''
     });
+
+    this.vehicleEditForm = this.formBuilder.group({
+      id: '',
+      vehicleName: '',
+      vehicleType: '',
+      vehicleModel: '',
+      unitCarbonFootprint: ''
+    });
   }
 
   vehicleAddForm : FormGroup;
+  vehicleEditForm : FormGroup;
   vehicles : Vehicle[];
 
   ngOnInit() {
@@ -31,6 +40,7 @@ export class VehicleComponent {
     this.httpClientService.get<Vehicle[]>({
       controller: "Vehicles"
     }).subscribe(data => {
+      console.log(data);
       this.vehicles = data;
     });
   }
@@ -48,9 +58,37 @@ export class VehicleComponent {
     this.modalService.open(modal);
   }
 
+  openEditModal(modal: any, vehicle: Vehicle) {
+    this.vehicleEditForm.patchValue(vehicle);
+    this.modalService.open(modal);
+  }
+
   onSubmit(vehicleAddForm) {
     this.createVehicle(vehicleAddForm);
     this.modalService.dismissAll();
+  }
+
+  onSubmitEdit(vehicleEditForm) {
+    console.log(vehicleEditForm);
+    this.updateVehicle(vehicleEditForm);
+    this.modalService.dismissAll();
+  }
+
+  deleteVehicle(vehicleId : string) {
+    this.httpClientService.delete({
+      controller: "Vehicles"
+    }, vehicleId).subscribe(data => {
+      this.getVehicles();
+    });
+  }
+
+  updateVehicle(vehicle : any) {
+    console.log(vehicle);
+    this.httpClientService.put<Vehicle>({
+      controller: "Vehicles"
+    },vehicle).subscribe(data => {
+      this.getVehicles();
+    });
   }
   
   

@@ -12,6 +12,7 @@ import { Vehicle } from '../../contracts/vehicle';
 })
 export class TransportationComponent implements OnInit {
   transportationAddForm: FormGroup;
+  transportationEditForm: FormGroup;
   transportations: Transportation[];
   vehicles: Vehicle[];
 
@@ -21,6 +22,14 @@ export class TransportationComponent implements OnInit {
     private formBuilder: FormBuilder
   ) { 
     this.transportationAddForm = this.formBuilder.group({
+      transportationDateTime: '',
+      distance: '',
+      vehicleId: '',
+      totalCarbonFootprint: ''
+    });
+
+    this.transportationEditForm = this.formBuilder.group({
+      id: '',
       transportationDateTime: '',
       distance: '',
       vehicleId: '',
@@ -36,6 +45,7 @@ export class TransportationComponent implements OnInit {
     this.httpClientService.get<Transportation[]>({
       controller: "Transportations"
     }).subscribe(data => {
+      console.log(data);
       this.transportations = data;
     });
   }
@@ -44,6 +54,7 @@ export class TransportationComponent implements OnInit {
     this.httpClientService.get<Vehicle[]>({
       controller: "Vehicles"
     }).subscribe(data => {
+      console.log(data);
       this.vehicles = data;
     });
   }
@@ -57,12 +68,36 @@ export class TransportationComponent implements OnInit {
     });
   }
 
+  editTransportation(transportation: Transportation) {
+    this.httpClientService.put<Transportation>({
+      controller: "Transportations",
+    }, transportation).subscribe(data => {
+      this.getTransportations();
+    });
+  }
+
+  deleteTransportation(transportation: Transportation) {
+    this.httpClientService.delete({
+      controller: "Transportations"
+    }, transportation.id).subscribe(data => {
+      this.getTransportations();
+    });
+  }
+
+
+
   openModal(modal: any) {
     this.getVehicles();
     this.modalService.open(modal);
   }
 
-  calculateTotalCarbonFootprint() {
+  openEditModal(modal: any, transportation: Transportation) {
+    this.getVehicles();
+    this.transportationEditForm.patchValue(transportation);
+    this.modalService.open(modal);
+  }
+
+  calculateTotalCarbonFootprintAddition() {
     const distance = this.transportationAddForm.get('distance').value;
     const vehicleId = this.transportationAddForm.get('vehicleId').value;
     const vehicle = this.vehicles.find(v => v.id === vehicleId);
@@ -75,9 +110,28 @@ export class TransportationComponent implements OnInit {
     }
   }
 
+  calculateTotalCarbonFootprintEdit() {
+    const distance = this.transportationEditForm.get('distance').value;
+    const vehicleId = this.transportationEditForm.get('vehicleId').value;
+    const vehicle = this.vehicles.find(v => v.id === vehicleId);
+
+    if (vehicle && distance) {
+      const totalCarbonFootprint = distance * vehicle.unitCarbonFootprint;
+      this.transportationEditForm.get('totalCarbonFootprint').setValue(totalCarbonFootprint);
+    } else {
+      this.transportationEditForm.get('totalCarbonFootprint').setValue('');
+    }
+  }
+
   onSubmit() {
     const formValues = this.transportationAddForm.value;
     this.createTransportation(formValues);
+    this.modalService.dismissAll();
+  }
+
+  onEditSubmit() {
+    const formValues = this.transportationEditForm.value;
+    this.editTransportation(formValues);
     this.modalService.dismissAll();
   }
 

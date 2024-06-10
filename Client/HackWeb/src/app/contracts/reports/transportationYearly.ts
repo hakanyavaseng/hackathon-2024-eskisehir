@@ -1,4 +1,6 @@
+import { ByYearModel } from "./byYearModel";
+
 export class TransportationYearly {
-    year: number;
-    totalCarbonFootprintCount: number;
+    transportation: ByYearModel[];
+    totalCarbonFootprintIfElectrical: ByYearModel[];
 }
